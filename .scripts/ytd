@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+yt-dlp $1	--output '$HOME/Videos/yt-dlp/%(extractor)s/%(title)s-%(resolution)s-%(id)s-f%(format_id)s.%(ext)s'
+	
