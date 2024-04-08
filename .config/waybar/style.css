@@ -77,3 +77,6 @@ window#waybar {
     margin: 0 4px;
     background-color: #181818;
 }
+#battery.charging {
+    color: #34A853;
+}

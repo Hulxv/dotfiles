@@ -7,7 +7,8 @@
     "modules-left": [
         "cpu",
         "memory",
-        "disk",
+        "disk#root",
+        "disk#home",
         "network",
         "temperature",
         "hyprland/language"
@@ -33,10 +34,10 @@
         "format": "{icon} {capacity}% ({power}W)",
         "format-charging": "{capacity}% (Charging +{power}W)",
         "format-plugged": "{capacity}% (NOT CHARGING {power}W)",
-        "format-alt": "{icon} {time}, ",
+        "format-alt": "{icon}  {time}",
         "format-icons": ["", "", "", "", ""],
         "full_at": 85,
-        "on-click": "kitty -e 'battop'"
+        "on-click-right": "kitty -e 'battop'"
     },
     "hyprland/workspaces": {
         "sort-by-name": true,
@@ -50,7 +51,8 @@
         "format": "<span style=\"italic\">{}</span>"
     },
     "clock": {
-            "format": "  {:%I:%M %p} ",
+            "interval": 1,
+            "format": "  {:%I:%M:%OS %p} ",
             "format-alt": "  {:%A, %B %d, %Y }",
             "tooltip-format": "\n<span size='9pt' font='monospace'>{calendar}</span>",
             "calendar": {
@@ -80,6 +82,19 @@
         "format": "&#8239;{usage}%",
         "tooltip": false,
         "on-click": "kitty -e 'htop'"
+    },
+    "disk#root": {
+        "interval": 30,
+        "format": "/: {percentage_used}%",
+        "unit": "GB",
+        "on-click":"kitty -e 'dua i /'"
+    },
+    "disk#home": {
+        "interval": 30,
+        "format": "/home: {percentage_used}%",
+        "unit": "GB",
+        "path":"/home",
+        "on-click":"kitty -e 'dua i /home'"
     },
     "memory": {
         "interval": 5,

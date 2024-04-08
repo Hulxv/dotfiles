@@ -14,11 +14,20 @@ show_music_in_volume_indicator=true
 function get_volume {
 	pamixer --get-volume
 }
+function get_mic {
+	pamixer --get-volume --default-source
+}
+
 
 # Uses regex to get mute status from pactl
 function get_mute {
     pamixer --get-mute
 }
+
+function get_mic_mute {
+    pamixer --get-mute --default-source
+}
+
 
 # Uses regex to get brightness from xbacklight
 function get_brightness {
@@ -37,6 +46,19 @@ function get_volume_icon {
         volume_icon=""
     fi
 }
+
+function get_mic_icon {
+    mic_volume=$(get_mic)
+    mute=$(get_mic_mute)
+    if [ "$mic_volume" -eq 0 ] || [ "$mute" == "true" ] ; then
+        mic_icon="󰍭"
+    elif [ "$mic_volume" -lt 50 ]; then
+        mic_icon="󰍬"
+    else
+        mic_icon=""
+    fi
+}
+
 
 # Always returns the same icon - I couldn't get the brightness-low icon to work with fontawesome
 function get_brightness_icon {
@@ -90,6 +112,15 @@ function show_volume_notif {
     fi
 }
 
+function show_mic_notif {
+    mic_volume=$(get_mic_mute)
+    get_mic_icon
+
+    notify-send -t $notification_timeout -h string:x-dunst-stack-tag:mic_notif -h int:value:$mic_volume "$mic_icon  $mic_volume%"	 
+}
+
+
+
 # Displays a music notification
 function show_music_notif {
     song_title=$(playerctl -f "{{title}}" metadata)
@@ -131,7 +162,7 @@ case $1 in
     # Toggles mute and displays the notification
     pamixer -t
 
-        notify-send -t $notification_timeout -h string:x-dunst-stack-tag:volume_notif -h int:value:$volume "$volume_icon  $volume%"  
+    show_volume_notif
     ;;
 
     mic_mute)
@@ -139,6 +170,7 @@ case $1 in
     pamixer --default-source -t
 
         notify-send -t $notification_timeout -h string:x-dunst-stack-tag:volume_notif -h int:value:$volume "$volume_icon  $volume%"  
+    show_mic_notif
     ;;
 
     mic_up)
@@ -146,11 +178,13 @@ case $1 in
     pamixer --unmute
     volume=$(get_volume)
     pamixer --default-source -i $volume_step 
+    show_mic_notif
     ;;
 
     mic_down)
     # Raises volume and displays the notification
     pamixer --default-source -d $volume_step
+    show_mic_notif
     ;;
 
     
